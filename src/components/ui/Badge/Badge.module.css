@@ -1,0 +1,68 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  text-transform: capitalize;
+  border: 1px solid transparent;
+}
+
+/* Status variants */
+.status.wishlist {
+  background: hsla(263, 70%, 58%, 0.15);
+  border-color: hsla(263, 70%, 58%, 0.3);
+  color: hsl(263, 70%, 70%);
+}
+
+.status.applied {
+  background: hsla(217, 91%, 60%, 0.15);
+  border-color: hsla(217, 91%, 60%, 0.3);
+  color: hsl(217, 91%, 70%);
+}
+
+.status.interview {
+  background: hsla(38, 92%, 50%, 0.15);
+  border-color: hsla(38, 92%, 50%, 0.3);
+  color: hsl(38, 92%, 65%);
+}
+
+.status.offer {
+  background: hsla(142, 71%, 45%, 0.15);
+  border-color: hsla(142, 71%, 45%, 0.3);
+  color: hsl(142, 71%, 65%);
+}
+
+.status.rejected {
+  background: hsla(0, 84%, 60%, 0.15);
+  border-color: hsla(0, 84%, 60%, 0.3);
+  color: hsl(0, 84%, 70%);
+}
+
+.status.ghosted {
+  background: hsla(220, 9%, 46%, 0.15);
+  border-color: hsla(220, 9%, 46%, 0.3);
+  color: hsl(220, 9%, 70%);
+}
+
+/* Priority variants */
+.priority.low {
+  background: hsla(215, 15%, 60%, 0.12);
+  border-color: hsla(215, 15%, 60%, 0.2);
+  color: hsl(215, 15%, 75%);
+}
+
+.priority.medium {
+  background: hsla(38, 92%, 50%, 0.12);
+  border-color: hsla(38, 92%, 50%, 0.2);
+  color: hsl(38, 92%, 65%);
+}
+
+.priority.high {
+  background: hsla(0, 84%, 60%, 0.12);
+  border-color: hsla(0, 84%, 60%, 0.2);
+  color: hsl(0, 84%, 70%);
+}

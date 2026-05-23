@@ -1,0 +1,118 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  outline: none;
+  white-space: nowrap;
+  user-select: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Sizing */
+.sm {
+  height: 36px;
+  padding: 0 14px;
+  font-size: 0.875rem;
+}
+
+.md {
+  height: 44px;
+  padding: 0 20px;
+  font-size: 0.95rem;
+}
+
+.lg {
+  height: 52px;
+  padding: 0 28px;
+  font-size: 1.05rem;
+}
+
+/* Variants */
+.primary {
+  background: var(--accent);
+  color: var(--text-primary);
+  box-shadow: 0 4px 12px hsla(250, 85%, 65%, 0.3);
+}
+
+.primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px hsla(250, 85%, 65%, 0.4);
+}
+
+.primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.secondary {
+  background: var(--bg-tertiary);
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+
+.secondary:hover:not(:disabled) {
+  background: var(--bg-card-hover);
+  border-color: var(--text-tertiary);
+}
+
+.outline {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--text-secondary);
+}
+
+.outline:hover:not(:disabled) {
+  background: var(--accent-subtle);
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+
+.danger {
+  background: var(--status-rejected);
+  color: var(--text-primary);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+}
+
+.danger:hover:not(:disabled) {
+  background: hsl(0, 84%, 65%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(239, 68, 68, 0.35);
+}
+
+.ghost {
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.ghost:hover:not(:disabled) {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+/* Spinner & Icon alignment */
+.spinner {
+  margin-right: 8px;
+  color: currentColor;
+}
+
+.icon {
+  margin-right: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.content {
+  display: inline-flex;
+  align-items: center;
+}
