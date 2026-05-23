@@ -1,0 +1,47 @@
+.boardWrapper {
+  width: 100%;
+  height: 100%;
+  overflow-x: auto;
+  padding-bottom: 12px;
+  /* Smooth scrolling experience on touch devices */
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Custom scrollbar for the board horizontal scroll */
+.boardWrapper::-webkit-scrollbar {
+  height: 8px;
+}
+
+.boardWrapper::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 4px;
+}
+
+.boardWrapper::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.boardWrapper::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.board {
+  display: flex;
+  gap: 20px;
+  height: 100%;
+  align-items: flex-start;
+  padding: 4px; /* Give room for card shadow on focus/hover */
+}
+
+/* Drag overlay styling - make the card tilt slightly and float premiumly */
+.overlayCardWrapper {
+  transform: rotate(2.5deg);
+  cursor: grabbing;
+  pointer-events: none;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);
+  border-radius: var(--radius-md);
+  border-color: var(--accent);
+}

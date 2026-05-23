@@ -1,8 +1,10 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 24px;
   animation: fadeIn 0.4s ease-out;
+  height: calc(100vh - 100px); /* Fill the screen */
+  overflow: hidden;
 }
 
 .header {
@@ -10,142 +12,151 @@
   justify-content: space-between;
   align-items: center;
   gap: 20px;
+  flex-shrink: 0;
 }
 
 .title {
   font-family: var(--font-display);
-  font-size: 2rem;
+  font-size: 1.85rem;
   font-weight: 800;
   letter-spacing: -0.02em;
   color: var(--text-primary);
+  margin: 0;
 }
 
 .subtitle {
-  font-size: 0.95rem;
-  color: var(--text-secondary);
-}
-
-.kanbanPlaceholder {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-}
-
-.columnTeaser {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  min-height: 250px;
-}
-
-.columnHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 10px;
-}
-
-.columnName {
-  font-weight: 600;
   font-size: 0.9rem;
   color: var(--text-secondary);
+  margin: 4px 0 0 0;
 }
 
-.emptyCardSlot {
-  flex: 1;
-  border: 2px dashed var(--border);
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  text-align: center;
-  color: var(--text-tertiary);
-  font-size: 0.85rem;
-}
-
-.nextStepsSection {
-  margin-top: 16px;
-}
-
-.sectionTitle {
-  font-family: var(--font-display);
-  font-size: 1.35rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 20px;
-}
-
-.stepsGrid {
+.dashboardLayout {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr;
   gap: 24px;
+  flex-grow: 1;
+  overflow: hidden;
+  height: 100%;
 }
 
-.stepCard {
+.mainSection {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.sidebarSection {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  padding: 20px;
+  height: calc(100vh - 190px);
+  overflow-y: auto;
 }
 
-.stepIconWrapper {
-  color: var(--accent);
-  background: var(--accent-subtle);
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
+.sidebarTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 12px;
+}
+
+.activityFeed {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.activityItem {
+  display: flex;
+  gap: 12px;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--text-secondary);
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.activityItem:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.activityIcon {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--bg-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.stepTitle {
-  font-size: 1.05rem;
-  font-weight: 600;
-  color: var(--text-primary);
+.iconCreated {
+  color: var(--status-applied);
 }
 
-.stepDescription {
-  font-size: 0.875rem;
+.iconStatus {
+  color: var(--status-interview);
+}
+
+.iconInterview {
+  color: var(--status-offer);
+}
+
+.activityContent {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.activityText {
   color: var(--text-secondary);
-  line-height: 1.5;
 }
 
-.stepCard code {
-  background: var(--bg-secondary);
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-family: monospace;
-  font-size: 0.8rem;
-  color: hsl(250, 85%, 75%);
+.activityText strong {
+  color: var(--text-primary);
+  font-weight: 500;
 }
 
-@media (max-width: 1024px) {
-  .kanbanPlaceholder {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .stepsGrid {
-    grid-template-columns: 1fr;
+.activityTime {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+}
+
+.emptyFeed {
+  text-align: center;
+  padding: 40px 0;
+  color: var(--text-tertiary);
+  font-style: italic;
+  font-size: 0.85rem;
+}
+
+/* Responsive adjustment */
+@media (min-width: 1280px) {
+  .dashboardLayout {
+    grid-template-columns: 1fr 320px;
   }
 }
 
-@media (max-width: 640px) {
-  .header {
-    flex-direction: column;
-    align-items: flex-start;
+@media (max-width: 768px) {
+  .container {
+    height: auto;
+    overflow: visible;
   }
-  
-  .kanbanPlaceholder {
-    grid-template-columns: 1fr;
+  .dashboardLayout {
+    height: auto;
+    overflow: visible;
+  }
+  .sidebarSection {
+    height: auto;
+    overflow: visible;
   }
 }
