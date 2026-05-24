@@ -1,14 +1,14 @@
 # ✨ TrackHire — Full-Stack AI Job Application Tracker & Pipeline
 
-TrackHire is a full-stack Next.js 15 (App Router) application designed for modern job seekers. It features an interactive, drag-and-drop Kanban applications board, server-side PDF resume parsing, Google Gemini AI job matching, and detailed Recharts analytics dashboards.
+TrackHire is a full-stack Next.js 15 (App Router) application designed for modern job seekers. It features an interactive, drag-and-drop Kanban applications board, server-side PDF resume parsing, Groq AI & Google Gemini job matching, and detailed Recharts analytics dashboards.
 
 ---
 
 ## 🚀 Key Features
 
 *   **Interactive Kanban Pipeline**: Drag and drop applications across custom statuses (Wishlist, Applied, Interview, Offer, Rejected, Ghosted) with optimistic UI updates and midpoint ordering.
-*   **AI Job description Parser**: Paste any job posting and let Google Gemini extract company details, positions, locations, salary brackets, key requirements, and match scores.
-*   **Resume PDF Extractor**: Upload PDF resumes to private user-partitioned storage buckets. Extracted plaintext is cached in database profiles for Gemini match evaluation.
+*   **AI Job description Parser**: Paste any job posting and let the AI engine (Groq Llama 3.3 or Google Gemini fallback) extract company details, positions, locations, salary brackets, key requirements, and match scores.
+*   **Resume PDF Extractor**: Upload PDF resumes to private user-partitioned storage buckets. Extracted plaintext is cached in database profiles for AI match evaluation.
 *   **Analytics Dashboard**: Visual analytics including Pie, Area, and Bar charts highlighting application volume timeline, outcome rates, and pipeline distribution.
 *   **Secure Partitioning**: Secured database tables using PostgreSQL Row Level Security (RLS) policies and authorized cookie sessions refresh via Supabase SSR Middleware.
 
@@ -18,7 +18,7 @@ TrackHire is a full-stack Next.js 15 (App Router) application designed for moder
 
 *   **Framework**: Next.js 15 (App Router)
 *   **Database & Auth**: Supabase (PostgreSQL, RLS, Storage Buckets, SSR Auth, Google OAuth)
-*   **AI Engine**: Google Gemini API (`gemini-2.0-flash` model via `@google/generative-ai`)
+*   **AI Engine**: Groq API (`llama-3.3-70b-versatile` model) with auto-fallback to Google Gemini API (`gemini-2.0-flash` model via `@google/generative-ai`)
 *   **Document Extractor**: `pdf-parse-new`
 *   **Drag & Drop**: `@dnd-kit/core` + `@dnd-kit/sortable`
 *   **Visualizations**: Recharts
@@ -36,7 +36,8 @@ Create a `.env.local` file at the root of the project directory with the followi
 NEXT_PUBLIC_SUPABASE_URL=https://your-supabase-project-id.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-public-anon-key
 
-# Gemini AI (Server-side ONLY - no NEXT_PUBLIC_ prefix)
+# AI Providers (Server-side ONLY - no NEXT_PUBLIC_ prefix)
+GROQ_API_KEY=your-groq-api-key
 GEMINI_API_KEY=your-google-gemini-api-key
 ```
 
@@ -231,4 +232,4 @@ To run TrackHire locally:
 ## 📦 Vercel Deployment Notes
 
 *   **Turbopack & serverExternalPackages**: This project relies on `pdf-parse-new` which uses Node.js native packages. Our `next.config.mjs` configures `serverExternalPackages: ['pdf-parse-new']` so that Vercel packages it natively instead of bundling it inside Webpack.
-*   **Vercel Serverless Function Timeout**: PDF text parsing and Gemini queries can exceed the default 10s serverless limit on free Vercel accounts. We define `export const maxDuration = 30;` on AI API routes to prevent gateway timeouts.
+*   **Vercel Serverless Function Timeout**: PDF text parsing and AI queries can exceed the default 10s serverless limit on free Vercel accounts. We define `export const maxDuration = 30;` on AI API routes to prevent gateway timeouts.
