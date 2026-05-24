@@ -8,6 +8,7 @@ export const maxDuration = 30; // Extend serverless function timeout for Gemini 
 const AI_TIMEOUT_MS = 20000; // 20-second timeout for Gemini responses
 
 export async function POST(request) {
+  const useGroq = !!process.env.GROQ_API_KEY;
   try {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
@@ -66,8 +67,8 @@ export async function POST(request) {
         "position": "string",
         "location": "string (format: 'City, State' or 'Remote' or 'Hybrid')",
         "job_type": "one of: full-time, part-time, contract, internship",
-        "salary_min": number (annual salary in USD, e.g. 90000, or null),
-        "salary_max": number (annual salary in USD, e.g. 120000, or null),
+        "salary_min": number (minimum salary numerical value as stated in the job description, e.g. 90000 or 150000, or null),
+        "salary_max": number (maximum salary numerical value as stated in the job description, e.g. 120000 or 250000, or null),
         "key_requirements": ["string", "string", ...],
         "summary": "A 2-3 sentence summary of the role"
     `;
@@ -96,41 +97,97 @@ export async function POST(request) {
       `;
     }
 
-    // Call Gemini with a timeout to prevent indefinite hanging
+    // Call Gemini or Groq with a timeout to prevent indefinite hanging
     const timeoutPromise = new Promise((_, reject) =>
       setTimeout(() => reject(new Error("AI_TIMEOUT")), AI_TIMEOUT_MS)
     );
 
-    let result;
-    try {
-      result = await Promise.race([
-        getGeminiModel().generateContent(prompt),
-        timeoutPromise,
-      ]);
-    } catch (raceError) {
-      if (raceError.message === "AI_TIMEOUT") {
-        return NextResponse.json(
-          { error: "AI analysis timed out. Please try again with a shorter job description." },
-          { status: 504 }
-        );
-      }
-      throw raceError;
-    }
-
-    const responseText = result.response.text().trim();
-
-    // Clean potential markdown wrap fences (e.g. ```json ... ```)
-    const cleanJson = responseText
-      .replace(/^```(?:json)?\s*/i, "")
-      .replace(/\s*```\s*$/i, "")
-      .trim();
-
     let parsedData = null;
-    try {
-      parsedData = JSON.parse(cleanJson);
-    } catch (parseError) {
-      console.error("Failed to parse Gemini JSON output:", responseText);
-      return NextResponse.json({ error: "Gemini did not return valid JSON" }, { status: 502 });
+
+    if (useGroq) {
+      const groqPromise = (async () => {
+        const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${process.env.GROQ_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: "llama-3.3-70b-versatile",
+            messages: [
+              {
+                role: "system",
+                content: "You are an expert AI recruiting assistant. You must return only a valid JSON object matching the requested schema. Do not include markdown formatting, backticks, or any conversational text around the JSON.",
+              },
+              {
+                role: "user",
+                content: prompt,
+              },
+            ],
+            temperature: 0.1,
+            response_format: { type: "json_object" },
+          }),
+        });
+
+        if (!groqRes.ok) {
+          const errText = await groqRes.text();
+          throw new Error(`Groq API error: ${groqRes.status} ${errText}`);
+        }
+
+        const groqJson = await groqRes.json();
+        return groqJson.choices?.[0]?.message?.content;
+      })();
+
+      let responseText;
+      try {
+        responseText = await Promise.race([groqPromise, timeoutPromise]);
+      } catch (raceError) {
+        if (raceError.message === "AI_TIMEOUT") {
+          return NextResponse.json(
+            { error: "AI analysis timed out. Please try again with a shorter job description." },
+            { status: 504 }
+          );
+        }
+        throw raceError;
+      }
+
+      try {
+        parsedData = JSON.parse(responseText.trim());
+      } catch (parseError) {
+        console.error("Failed to parse Groq JSON output:", responseText);
+        return NextResponse.json({ error: "Groq did not return valid JSON" }, { status: 502 });
+      }
+    } else {
+      let result;
+      try {
+        result = await Promise.race([
+          getGeminiModel().generateContent(prompt),
+          timeoutPromise,
+        ]);
+      } catch (raceError) {
+        if (raceError.message === "AI_TIMEOUT") {
+          return NextResponse.json(
+            { error: "AI analysis timed out. Please try again with a shorter job description." },
+            { status: 504 }
+          );
+        }
+        throw raceError;
+      }
+
+      const responseText = result.response.text().trim();
+
+      // Clean potential markdown wrap fences (e.g. ```json ... ```)
+      const cleanJson = responseText
+        .replace(/^```(?:json)?\s*/i, "")
+        .replace(/\s*```\s*$/i, "")
+        .trim();
+
+      try {
+        parsedData = JSON.parse(cleanJson);
+      } catch (parseError) {
+        console.error("Failed to parse Gemini JSON output:", responseText);
+        return NextResponse.json({ error: "Gemini did not return valid JSON" }, { status: 502 });
+      }
     }
 
     return NextResponse.json({
@@ -139,6 +196,53 @@ export async function POST(request) {
     });
   } catch (error) {
     console.error("AI Parser route handler error:", error);
-    return NextResponse.json({ error: error.message || "Failed to parse job description" }, { status: 500 });
+    
+    let userMessage = "Failed to analyze the job description. Please try again.";
+    const errMsg = error.message || "";
+    
+    if (useGroq) {
+      if (
+        errMsg.includes("429") || 
+        errMsg.toLowerCase().includes("rate limit") ||
+        errMsg.toLowerCase().includes("quota")
+      ) {
+        userMessage = "Groq AI service rate limit reached. Please wait a few seconds before trying again, or check your rate limits in the Groq Console.";
+      } else if (
+        errMsg.includes("401") ||
+        errMsg.toLowerCase().includes("api key") ||
+        errMsg.toLowerCase().includes("unauthorized")
+      ) {
+        userMessage = "Groq configuration error. The server's Groq API key is invalid or unauthorized.";
+      } else if (
+        errMsg.includes("503") || 
+        errMsg.toLowerCase().includes("overloaded") || 
+        errMsg.toLowerCase().includes("service unavailable")
+      ) {
+        userMessage = "Groq AI servers are currently overloaded. Please try again in a moment.";
+      }
+    } else {
+      if (errMsg.includes("limit: 0")) {
+        userMessage = "AI quota limit is 0. This usually means your Gemini API Key or Google Cloud project is restricted, needs billing setup, or is not available in your region. Please verify your API key and limits in Google AI Studio.";
+      } else if (
+        errMsg.includes("429") || 
+        errMsg.toLowerCase().includes("quota exceeded") || 
+        errMsg.toLowerCase().includes("rate limit")
+      ) {
+        userMessage = "Google Gemini AI service rate limit reached. Please wait a few seconds before trying again.";
+      } else if (
+        errMsg.includes("API_KEY_INVALID") || 
+        errMsg.toLowerCase().includes("api key not valid")
+      ) {
+        userMessage = "Google Gemini configuration error. The server's API key is invalid or unauthorized.";
+      } else if (
+        errMsg.includes("503") || 
+        errMsg.toLowerCase().includes("overloaded") || 
+        errMsg.toLowerCase().includes("service unavailable")
+      ) {
+        userMessage = "Google Gemini servers are currently overloaded. Please try again in a moment.";
+      }
+    }
+    
+    return NextResponse.json({ error: userMessage }, { status: 500 });
   }
 }

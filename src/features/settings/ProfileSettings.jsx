@@ -14,6 +14,7 @@ export function ProfileSettings() {
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   const [initialFullName, setInitialFullName] = useState("");
+  const [aiProvider, setAiProvider] = useState("Google Gemini 2.0 Flash");
 
   const supabase = useMemo(() => createClient(), []);
 
@@ -44,6 +45,24 @@ export function ProfileSettings() {
     }
     loadUserData();
   }, [supabase]);
+
+  // Fetch active AI provider status
+  useEffect(() => {
+    async function getStatus() {
+      try {
+        const res = await fetch("/api/ai/status");
+        if (res.ok) {
+          const json = await res.json();
+          if (json.provider) {
+            setAiProvider(json.provider);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load AI status:", err);
+      }
+    }
+    getStatus();
+  }, []);
 
   // Handle Display Name form submit
   const handleUpdateProfile = async (e) => {
@@ -147,11 +166,11 @@ export function ProfileSettings() {
           <h2 className={styles.cardTitle}>System & Integration</h2>
         </div>
         <p className={styles.cardDescription}>
-          Active session credentials and details about Google Gemini API integration:
+          Active session credentials and details about AI parser integration:
         </p>
         <div className={styles.infoBox}>
           <Sparkles size={16} className={styles.infoIcon} />
-          <span>Google Gemini 2.0 Flash matching integration is active and running.</span>
+          <span>{aiProvider} matching integration is active and running.</span>
         </div>
       </div>
     </div>

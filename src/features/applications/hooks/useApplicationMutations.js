@@ -5,6 +5,19 @@ import { createClient } from "@/lib/supabase/client";
 import { POSITION_GAP } from "@/utils/constants";
 import { toast } from "react-hot-toast";
 
+function getFriendlyErrorMessage(err, defaultMessage) {
+  if (!err) return defaultMessage;
+  const msg = err.message || "";
+  if (
+    msg.toLowerCase().includes("failed to fetch") ||
+    msg.toLowerCase().includes("networkerror") ||
+    msg.toLowerCase().includes("load failed")
+  ) {
+    return "Connection error. Please check your internet connection and try again.";
+  }
+  return err.message || defaultMessage;
+}
+
 export function useApplicationMutations() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -88,8 +101,9 @@ export function useApplicationMutations() {
       return data;
     } catch (err) {
       console.error("Error creating application:", err);
-      setError(err.message);
-      toast.error(err.message || "Failed to add application");
+      const friendlyMsg = getFriendlyErrorMessage(err, "Failed to add application");
+      setError(friendlyMsg);
+      toast.error(friendlyMsg);
       throw err;
     } finally {
       setLoading(false);
@@ -153,8 +167,9 @@ export function useApplicationMutations() {
       return updatedApp;
     } catch (err) {
       console.error("Error updating application:", err);
-      setError(err.message);
-      toast.error(err.message || "Failed to update application");
+      const friendlyMsg = getFriendlyErrorMessage(err, "Failed to update application");
+      setError(friendlyMsg);
+      toast.error(friendlyMsg);
       throw err;
     } finally {
       setLoading(false);
@@ -200,8 +215,9 @@ export function useApplicationMutations() {
       }
     } catch (err) {
       console.error("Error deleting application:", err);
-      setError(err.message);
-      toast.error(err.message || "Failed to delete application");
+      const friendlyMsg = getFriendlyErrorMessage(err, "Failed to delete application");
+      setError(friendlyMsg);
+      toast.error(friendlyMsg);
       throw err;
     } finally {
       setLoading(false);

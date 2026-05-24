@@ -60,7 +60,7 @@ export function TimelineChart({ data = [] }) {
               axisLine={false}
               dx={-8}
             />
-            <Tooltip content={customTooltip} />
+            <Tooltip content={customTooltip} cursor={{ stroke: "rgba(255, 255, 255, 0.1)", strokeWidth: 1 }} />
             <Area
               type="monotone"
               dataKey="Applications"

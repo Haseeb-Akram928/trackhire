@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { MapPin, Calendar, Building, ExternalLink, DollarSign, Briefcase } from "lucide-react";
+import { MapPin, Calendar, Building, ExternalLink, Banknote, Briefcase } from "lucide-react";
 import { Badge } from "@/components/ui/Badge/Badge";
 import { timeAgo, formatSalaryRange } from "@/utils/helpers";
 import styles from "./ApplicationCard.module.css";
@@ -59,8 +59,8 @@ export function ApplicationCard({ application, onClick, compact = false }) {
         )}
         {(application.salary_min || application.salary_max) && (
           <span className={styles.metaItem}>
-            <DollarSign size={12} />
-            {formatSalaryRange(application.salary_min, application.salary_max)}
+            <Banknote size={12} />
+            {formatSalaryRange(application.salary_min, application.salary_max, application.location)}
           </span>
         )}
       </div>

@@ -168,7 +168,7 @@ export function JobParser() {
               <div className={styles.detailRow}>
                 <span className={styles.detailLabel}>Salary Range</span>
                 <span className={styles.detailValue}>
-                  {formatSalaryRange(parsedData.salary_min, parsedData.salary_max)}
+                  {formatSalaryRange(parsedData.salary_min, parsedData.salary_max, parsedData.location)}
                 </span>
               </div>
             </div>

@@ -49,7 +49,7 @@ export function ResponseRateChart({ data = [] }) {
               axisLine={false}
               dx={-8}
             />
-            <Tooltip content={customTooltip} />
+            <Tooltip content={customTooltip} cursor={{ fill: "rgba(255, 255, 255, 0.05)" }} />
             <Legend
               iconType="circle"
               iconSize={8}

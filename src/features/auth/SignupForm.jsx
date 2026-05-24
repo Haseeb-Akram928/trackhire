@@ -13,7 +13,11 @@ export function SignupForm() {
   const [password, setPassword] = useState("");
   const [validationErrors, setValidationErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
-  const { signup, loginWithGoogle, loading, error } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const { signup, loginWithGoogle, error } = useAuth();
+
+  const loading = isSubmitting || isGoogleLoading;
 
   function validate() {
     const errors = {};
@@ -33,15 +37,26 @@ export function SignupForm() {
     e.preventDefault();
     if (!validate()) return;
     setSuccessMessage("");
+    setIsSubmitting(true);
 
     try {
       await signup(email, password, fullName);
     } catch (err) {
+      setIsSubmitting(false);
       // If the error is the email confirmation message, treat it as success
       if (err.message.startsWith("Account created!")) {
         setSuccessMessage(err.message);
       }
       // Other errors are displayed via useAuth error state
+    }
+  }
+
+  async function handleGoogleLogin() {
+    setIsGoogleLoading(true);
+    try {
+      await loginWithGoogle();
+    } catch (err) {
+      setIsGoogleLoading(false);
     }
   }
 
@@ -86,7 +101,7 @@ export function SignupForm() {
           disabled={loading}
         />
 
-        <Button type="submit" isLoading={loading} style={{ width: "100%" }}>
+        <Button type="submit" isLoading={isSubmitting} disabled={loading} style={{ width: "100%" }}>
           Sign Up
         </Button>
       </form>
@@ -95,8 +110,9 @@ export function SignupForm() {
 
       <Button
         variant="secondary"
-        onClick={loginWithGoogle}
+        onClick={handleGoogleLogin}
         disabled={loading}
+        isLoading={isGoogleLoading}
         className={styles.oauthButton}
         icon={
           <svg className={styles.googleIcon} viewBox="0 0 24 24">

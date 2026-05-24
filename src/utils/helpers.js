@@ -46,9 +46,28 @@ export function formatDateTime(dateInput) {
  * @param {number|null} max
  * @returns {string}
  */
-export function formatSalaryRange(min, max) {
+export function formatSalaryRange(min, max, location = "") {
   if (!min && !max) return "Not specified";
-  const fmt = (n) => `$${Math.round(n / 1000)}k`;
+  
+  const locLower = (location || "").toLowerCase();
+  const isPK = 
+    locLower.includes("pakistan") || 
+    locLower.includes("lahore") || 
+    locLower.includes("karachi") || 
+    locLower.includes("islamabad") || 
+    locLower.includes("pkr") || 
+    locLower.includes("pk");
+
+  const fmt = (n) => {
+    if (isPK) {
+      if (n >= 1000) {
+        return `Rs ${Math.round(n / 1000)}k`;
+      }
+      return `Rs ${n}`;
+    }
+    return `$${Math.round(n / 1000)}k`;
+  };
+
   if (min && max) return `${fmt(min)} – ${fmt(max)}`;
   if (min) return `From ${fmt(min)}`;
   return `Up to ${fmt(max)}`;

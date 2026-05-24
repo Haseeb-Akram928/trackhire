@@ -11,7 +11,11 @@ export function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [validationErrors, setValidationErrors] = useState({});
-  const { login, loginWithGoogle, loading, error } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const { login, loginWithGoogle, error } = useAuth();
+
+  const loading = isSubmitting || isGoogleLoading;
 
   function validate() {
     const errors = {};
@@ -28,11 +32,22 @@ export function LoginForm() {
   async function handleSubmit(e) {
     e.preventDefault();
     if (!validate()) return;
+    setIsSubmitting(true);
 
     try {
       await login(email, password);
     } catch (err) {
       // Handled by useAuth state
+      setIsSubmitting(false);
+    }
+  }
+
+  async function handleGoogleLogin() {
+    setIsGoogleLoading(true);
+    try {
+      await loginWithGoogle();
+    } catch (err) {
+      setIsGoogleLoading(false);
     }
   }
 
@@ -64,7 +79,7 @@ export function LoginForm() {
           disabled={loading}
         />
 
-        <Button type="submit" isLoading={loading} style={{ width: "100%" }}>
+        <Button type="submit" isLoading={isSubmitting} disabled={loading} style={{ width: "100%" }}>
           Sign In
         </Button>
       </form>
@@ -73,8 +88,9 @@ export function LoginForm() {
 
       <Button
         variant="secondary"
-        onClick={loginWithGoogle}
+        onClick={handleGoogleLogin}
         disabled={loading}
+        isLoading={isGoogleLoading}
         className={styles.oauthButton}
         icon={
           <svg className={styles.googleIcon} viewBox="0 0 24 24">

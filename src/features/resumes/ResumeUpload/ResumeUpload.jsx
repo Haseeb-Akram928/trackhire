@@ -20,25 +20,30 @@ export function ResumeUpload() {
   } = useResume();
 
   const [dragActive, setDragActive] = useState(false);
-  const [downloadLink, setDownloadLink] = useState(null);
+  const [isDownloading, setIsDownloading] = useState(false);
   const fileInputRef = useRef(null);
 
   useEffect(() => {
     fetchResumeDetails();
   }, [fetchResumeDetails]);
 
-  // Generate signed download link when resume details are fetched
-  useEffect(() => {
-    async function updateLink() {
-      if (resumeDetails?.resume_url) {
-        const link = await getDownloadUrl(resumeDetails.resume_url);
-        setDownloadLink(link);
+  // Handle dynamic download URL generation on-click to prevent token expiration
+  const handleDownload = async () => {
+    if (!resumeDetails?.resume_url) return;
+    setIsDownloading(true);
+    try {
+      const url = await getDownloadUrl(resumeDetails.resume_url);
+      if (url) {
+        window.open(url, "_blank", "noopener,noreferrer");
       } else {
-        setDownloadLink(null);
+        toast.error("Could not generate secure download link.");
       }
+    } catch (err) {
+      toast.error("Failed to load download link.");
+    } finally {
+      setIsDownloading(false);
     }
-    updateLink();
-  }, [resumeDetails, getDownloadUrl]);
+  };
 
   // Handle file drag events
   const handleDrag = (e) => {
@@ -112,19 +117,17 @@ export function ResumeUpload() {
           </div>
 
           <div className={styles.actions}>
-            {downloadLink && (
-              <a
-                href={downloadLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.downloadLink}
-                title="Download resume PDF"
-              >
-                <Button variant="ghost" size="sm" icon={<Download size={14} />}>
-                  Download
-                </Button>
-              </a>
-            )}
+            <Button
+              variant="ghost"
+              size="sm"
+              icon={<Download size={14} />}
+              onClick={handleDownload}
+              isLoading={isDownloading}
+              disabled={isDownloading}
+              title="Download resume PDF"
+            >
+              Download
+            </Button>
             <Button
               variant="danger"
               size="sm"

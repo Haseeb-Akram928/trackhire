@@ -140,6 +140,15 @@ export function ApplicationForm({ isOpen, onClose, application = null, onSuccess
   }
 
   // Visibility is handled by the parent Modal component — no need to gate here (#13)
+  const locLower = (location || "").toLowerCase();
+  const isPK =
+    locLower.includes("pakistan") ||
+    locLower.includes("lahore") ||
+    locLower.includes("karachi") ||
+    locLower.includes("islamabad") ||
+    locLower.includes("pkr") ||
+    locLower.includes("pk");
+  const currencySymbol = isPK ? "PKR" : "$";
 
   return (
     <form onSubmit={handleSubmit} className={styles.form}>
@@ -231,16 +240,16 @@ export function ApplicationForm({ isOpen, onClose, application = null, onSuccess
 
         <div className={styles.salaryGroup}>
           <Input
-            label="Min Salary ($)"
-            placeholder="e.g. 80000"
+            label={`Min Salary (${currencySymbol})`}
+            placeholder={isPK ? "e.g. 150000" : "e.g. 80000"}
             value={salaryMin}
             onChange={(e) => setSalaryMin(e.target.value)}
             error={validationErrors.salaryMin}
             disabled={loading}
           />
           <Input
-            label="Max Salary ($)"
-            placeholder="e.g. 120000"
+            label={`Max Salary (${currencySymbol})`}
+            placeholder={isPK ? "e.g. 250000" : "e.g. 120000"}
             value={salaryMax}
             onChange={(e) => setSalaryMax(e.target.value)}
             error={validationErrors.salaryMax}
