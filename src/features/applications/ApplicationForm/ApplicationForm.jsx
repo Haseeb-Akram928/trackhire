@@ -8,7 +8,7 @@ import { useApplicationMutations } from "../hooks/useApplicationMutations";
 import styles from "./ApplicationForm.module.css";
 
 export function ApplicationForm({ isOpen, onClose, application = null, onSuccess, defaultStatus = "wishlist" }) {
-  const isEdit = !!application;
+  const isEdit = !!application && !!application.id;
   const { createApplication, updateApplication, deleteApplication, loading } = useApplicationMutations();
 
   // Form fields state
