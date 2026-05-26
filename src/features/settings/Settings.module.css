@@ -65,3 +65,24 @@
   color: var(--accent);
   flex-shrink: 0;
 }
+
+@media (max-width: 768px) {
+  .container {
+    max-width: 100%;
+  }
+
+  .card {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .cardTitle {
+    font-size: 1rem;
+  }
+
+  .infoBox {
+    font-size: 0.8rem;
+    padding: 10px 12px;
+  }
+}
+

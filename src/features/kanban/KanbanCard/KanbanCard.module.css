@@ -122,3 +122,34 @@
   text-transform: uppercase;
   letter-spacing: 0.02em;
 }
+
+@media (max-width: 768px) {
+  .card {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .company {
+    font-size: 0.7rem;
+  }
+
+  .position {
+    font-size: 0.85rem;
+  }
+
+  .metaRow {
+    gap: 8px;
+    font-size: 0.7rem;
+  }
+
+  .footer {
+    padding-top: 8px;
+    margin-top: 2px;
+  }
+
+  .jobTypeBadge {
+    font-size: 0.62rem;
+    padding: 2px 6px;
+  }
+}
+

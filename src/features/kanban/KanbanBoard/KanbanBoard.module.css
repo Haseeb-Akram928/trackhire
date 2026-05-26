@@ -45,3 +45,16 @@
   border-radius: var(--radius-md);
   border-color: var(--accent);
 }
+
+@media (max-width: 768px) {
+  .boardWrapper {
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 8px;
+  }
+
+  .board {
+    gap: 12px;
+    padding: 2px;
+  }
+}

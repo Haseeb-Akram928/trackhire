@@ -23,3 +23,18 @@
     grid-template-columns: 1fr;
   }
 }
+
+@media (max-width: 768px) {
+  .content {
+    gap: 16px;
+  }
+
+  .chartsGrid {
+    gap: 16px;
+  }
+
+  .chartCard {
+    padding: 16px;
+    border-radius: var(--radius-md);
+  }
+}

@@ -1,3 +1,9 @@
+/* ═══════════════════════════════════════════════════════
+   Sidebar — Desktop + Mobile Bottom Navigation
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Desktop Sidebar ──────────────────────────────────── */
+
 .sidebar {
   width: 260px;
   height: 100vh;
@@ -125,25 +131,91 @@
   color: var(--status-rejected);
 }
 
-/* Responsiveness helper for Phase 5 layouts */
-@media (max-width: 768px) {
-  .sidebar {
-    width: 72px;
-    padding: 20px 10px;
-    align-items: center;
-  }
+/* ── Mobile Bottom Navigation ─────────────────────────── */
 
-  .logoText,
-  .label {
+.bottomNav {
+  display: none; /* Hidden on desktop */
+}
+
+/* ── Responsive ───────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  /* Hide desktop sidebar on mobile */
+  .sidebar {
     display: none;
   }
 
-  .logoWrapper {
-    margin-bottom: 30px;
+  /* Show mobile bottom nav */
+  .bottomNav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 200;
+    height: 64px;
+    background: rgba(10, 13, 20, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid hsla(215, 28%, 18%, 0.6);
+    box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.4);
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 4px;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
-  .navLink, .logoutButton {
+  .bottomNavItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
-    padding: 12px;
+    gap: 3px;
+    padding: 6px 4px;
+    text-decoration: none;
+    color: var(--text-tertiary);
+    font-size: 0.62rem;
+    font-weight: 500;
+    border-radius: var(--radius-md);
+    transition: all 0.2s ease;
+    position: relative;
+    min-width: 56px;
+    min-height: 44px;
+  }
+
+  .bottomNavItem::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 0 0 4px 4px;
+    transition: width 0.25s ease;
+  }
+
+  .bottomNavItemActive {
+    color: hsl(250, 85%, 75%);
+    font-weight: 600;
+  }
+
+  .bottomNavItemActive::before {
+    width: 24px;
+  }
+
+  .bottomNavItemActive .bottomNavIcon {
+    color: hsl(250, 85%, 70%);
+    filter: drop-shadow(0 0 6px hsla(250, 85%, 65%, 0.4));
+  }
+
+  .bottomNavIcon {
+    transition: all 0.2s ease;
+  }
+
+  .bottomNavLabel {
+    white-space: nowrap;
+    letter-spacing: 0.01em;
   }
 }

@@ -154,3 +154,41 @@
 .addCardBtn:active {
   transform: scale(0.98);
 }
+
+@media (max-width: 768px) {
+  .column {
+    width: 260px;
+    min-width: 260px;
+    height: calc(100vh - 310px);
+    min-height: 360px;
+    scroll-snap-align: start;
+  }
+
+  .header {
+    padding: 12px 14px;
+  }
+
+  .title {
+    font-size: 0.85rem;
+  }
+
+  .cardList {
+    padding: 10px;
+  }
+
+  .cardsContainer {
+    gap: 10px;
+  }
+
+  .addCardBtn {
+    width: calc(100% - 20px);
+    margin: 0 10px 10px 10px;
+    padding: 8px;
+    font-size: 0.75rem;
+  }
+
+  .emptyState {
+    padding: 24px 12px;
+  }
+}
+

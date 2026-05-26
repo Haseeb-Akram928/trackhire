@@ -327,3 +327,68 @@
     grid-template-columns: 1fr;
   }
 }
+
+@media (max-width: 768px) {
+  .inputCard {
+    padding: 16px;
+  }
+
+  .controlsRow {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .actionButtons {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .actionButtons > * {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .resultsCard {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .cardHeader {
+    padding-bottom: 10px;
+  }
+
+  .cardTitle {
+    font-size: 1rem;
+  }
+
+  .detailRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    padding-bottom: 8px;
+  }
+
+  .gaugeContainer {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+  }
+
+  .gaugeMeta {
+    align-items: center;
+  }
+
+  .skeletonLeft,
+  .skeletonRight {
+    padding: 16px;
+    min-height: 250px;
+  }
+
+  .shimmerCircle {
+    width: 90px;
+    height: 90px;
+  }
+}
+

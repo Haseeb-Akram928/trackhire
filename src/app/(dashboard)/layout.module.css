@@ -25,9 +25,10 @@
 
 @media (max-width: 768px) {
   .contentWrapper {
-    margin-left: 72px; /* Small sidebar on mobile */
+    margin-left: 0; /* Sidebar is hidden, bottom nav is used */
+    padding-bottom: 72px; /* Space for bottom nav */
   }
-  
+
   .main {
     padding: 20px 16px;
   }

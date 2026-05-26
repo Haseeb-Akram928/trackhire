@@ -200,11 +200,66 @@
 }
 
 @media (max-width: 768px) {
+  .container {
+    gap: 12px;
+  }
+
   .toolbar {
     flex-direction: column;
     align-items: stretch;
+    gap: 10px;
   }
+
   .searchWrapper {
     max-width: none;
+    min-width: unset;
+  }
+
+  .searchInput {
+    height: 44px;
+    font-size: 0.85rem;
+  }
+
+  .filters {
+    gap: 8px;
+  }
+
+  .filterGroup {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .filterSelect {
+    font-size: 0.8rem;
+    width: 100%;
+  }
+
+  .tableWrapper {
+    border-radius: var(--radius-md);
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table {
+    min-width: 700px;
+    font-size: 0.8rem;
+  }
+
+  .table th {
+    padding: 12px 14px;
+    font-size: 0.7rem;
+  }
+
+  .table td {
+    padding: 12px 14px;
+  }
+
+  .editBtn {
+    padding: 8px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .emptyContainer {
+    padding: 40px 16px;
   }
 }

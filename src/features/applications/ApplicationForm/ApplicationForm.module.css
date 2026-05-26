@@ -108,5 +108,31 @@
 @media (max-width: 680px) {
   .formGrid {
     grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .salaryGroup {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .footer {
+    flex-direction: column-reverse;
+    gap: 8px;
+    padding-top: 16px;
+  }
+
+  .footer > * {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .form {
+    gap: 16px;
+  }
+
+  .checkboxLabel {
+    font-size: 0.85rem;
   }
 }
+

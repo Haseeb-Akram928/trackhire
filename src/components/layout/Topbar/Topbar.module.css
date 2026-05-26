@@ -132,18 +132,31 @@
 
 @media (max-width: 768px) {
   .topbar {
+    height: 56px;
     padding: 0 16px;
   }
-  
+
   .searchWrapper {
-    max-width: 200px;
+    display: none;
   }
-  
+
+  .actions {
+    width: 100%;
+    justify-content: flex-end;
+    gap: 16px;
+  }
+
   .userInfo {
     display: none;
   }
-  
+
   .userProfile {
     padding-left: 16px;
+    border-left: none;
+  }
+
+  .avatar {
+    width: 34px;
+    height: 34px;
   }
 }

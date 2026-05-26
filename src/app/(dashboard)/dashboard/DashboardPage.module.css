@@ -150,13 +150,32 @@
   .container {
     height: auto;
     overflow: visible;
+    gap: 16px;
   }
+
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .subtitle {
+    font-size: 0.85rem;
+  }
+
   .dashboardLayout {
     height: auto;
     overflow: visible;
+    gap: 16px;
   }
+
   .sidebarSection {
     height: auto;
     overflow: visible;
+    padding: 16px;
   }
 }
