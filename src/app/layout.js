@@ -1,5 +1,6 @@
 import "@/styles/globals.css";
 import { Toaster } from "react-hot-toast";
+import { Analytics } from "@vercel/analytics/react";
 
 export const metadata = {
   title: "TrackHire | AI-Powered Job Application Tracker & Pipeline",
@@ -42,6 +43,7 @@ export default function RootLayout({ children }) {
             },
           }}
         />
+        <Analytics />
       </body>
     </html>
   );
