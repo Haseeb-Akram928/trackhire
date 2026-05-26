@@ -89,6 +89,11 @@
   color: var(--text-primary);
 }
 
+.filterSelect option {
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+}
+
 .tableWrapper {
   width: 100%;
   overflow-x: auto;
