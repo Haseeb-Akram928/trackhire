@@ -1,16 +1,25 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
-import { Search, Bell, User, LogOut, Settings } from "lucide-react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { Search, Bell, User, LogOut, Settings, MapPin, Briefcase, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/features/auth/useAuth";
+import { useGlobalSearch } from "./useGlobalSearch";
+import { Badge } from "@/components/ui/Badge/Badge";
 import styles from "./Topbar.module.css";
 
 export function Topbar({ user }) {
+  const router = useRouter();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const { logout } = useAuth();
+
+  // Global search hook
+  const { query, setQuery, results, loading, isOpen, close, clear } = useGlobalSearch();
+  const searchInputRef = useRef(null);
+  const searchWrapperRef = useRef(null);
 
   const [notifications, setNotifications] = useState([
     {
@@ -38,18 +47,57 @@ export function Topbar({ user }) {
 
   const actionsRef = useRef(null);
 
+  // Click outside handlers — close profile/notification dropdowns AND search dropdown
   useEffect(() => {
     function handleClickOutside(event) {
       if (actionsRef.current && !actionsRef.current.contains(event.target)) {
         setIsProfileOpen(false);
         setIsNotificationsOpen(false);
       }
+      if (searchWrapperRef.current && !searchWrapperRef.current.contains(event.target)) {
+        close();
+      }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
+  }, [close]);
+
+  // Ctrl+K / Cmd+K keyboard shortcut to focus search
+  useEffect(() => {
+    function handleKeyDown(e) {
+      if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    }
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
   }, []);
+
+  // Handle Escape key on search input
+  const handleSearchKeyDown = useCallback(
+    (e) => {
+      if (e.key === "Escape") {
+        close();
+        searchInputRef.current?.blur();
+      }
+    },
+    [close]
+  );
+
+  // Click on a search result → navigate to applications page and close
+  const handleResultClick = useCallback(
+    (app) => {
+      clear();
+      searchInputRef.current?.blur();
+      router.push("/applications");
+    },
+    [clear, router]
+  );
 
   // Get user display email or name
   const userEmail = user?.email || "User";
@@ -69,13 +117,103 @@ export function Topbar({ user }) {
 
   return (
     <header className={styles.topbar}>
-      <div className={styles.searchWrapper}>
+      <div className={styles.searchWrapper} ref={searchWrapperRef}>
         <Search className={styles.searchIcon} size={18} />
         <input
+          ref={searchInputRef}
           type="text"
           placeholder="Search applications, companies, roles..."
           className={styles.searchInput}
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={handleSearchKeyDown}
+          onFocus={() => {
+            // Re-open dropdown if there's a query with results
+            if (query.trim() && results.length > 0) {
+              // isOpen will be managed by the hook
+            }
+          }}
         />
+
+        {/* Keyboard shortcut hint — only show when input is empty and unfocused */}
+        {!query && (
+          <span className={styles.searchShortcut}>
+            <kbd>Ctrl</kbd>
+            <kbd>K</kbd>
+          </span>
+        )}
+
+        {/* Clear button when query has text */}
+        {query && (
+          <button
+            className={styles.searchClearBtn}
+            onClick={() => {
+              clear();
+              searchInputRef.current?.focus();
+            }}
+            aria-label="Clear search"
+          >
+            <X size={14} />
+          </button>
+        )}
+
+        {/* Search Results Dropdown */}
+        {isOpen && query.trim() && (
+          <div className={styles.searchDropdown}>
+            {loading ? (
+              <div className={styles.searchLoading}>
+                <div className={styles.searchSpinner} />
+                <span>Searching applications…</span>
+              </div>
+            ) : results.length > 0 ? (
+              <div className={styles.searchResults}>
+                <div className={styles.searchDropdownHeader}>
+                  <span className={styles.searchDropdownTitle}>Applications</span>
+                  <span className={styles.searchResultCount}>{results.length} found</span>
+                </div>
+                {results.map((app) => (
+                  <button
+                    key={app.id}
+                    className={styles.searchResultItem}
+                    onClick={() => handleResultClick(app)}
+                  >
+                    <div className={styles.searchResultInfo}>
+                      <span className={styles.searchResultCompany}>{app.company}</span>
+                      <span className={styles.searchResultPosition}>{app.position}</span>
+                    </div>
+                    <div className={styles.searchResultMeta}>
+                      <Badge type="status" value={app.status} />
+                      {app.location && (
+                        <span className={styles.searchResultLocation}>
+                          <MapPin size={11} />
+                          {app.location}
+                        </span>
+                      )}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <div className={styles.searchEmpty}>
+                <Briefcase size={22} />
+                <span className={styles.searchEmptyTitle}>No results found</span>
+                <span className={styles.searchEmptySubtext}>
+                  Try a different company name, role, or location.
+                </span>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Loading indicator when dropdown is not yet open but loading */}
+        {loading && !isOpen && query.trim() && (
+          <div className={styles.searchDropdown}>
+            <div className={styles.searchLoading}>
+              <div className={styles.searchSpinner} />
+              <span>Searching applications…</span>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className={styles.actions} ref={actionsRef}>

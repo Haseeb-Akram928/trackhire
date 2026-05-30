@@ -25,6 +25,7 @@
   left: 14px;
   color: var(--text-tertiary);
   pointer-events: none;
+  z-index: 2;
 }
 
 .searchInput {
@@ -33,7 +34,7 @@
   background: var(--bg-secondary);
   border: 1px solid var(--border);
   border-radius: 9999px;
-  padding: 0 16px 0 42px;
+  padding: 0 80px 0 42px;
   color: var(--text-primary);
   font-size: 0.875rem;
   font-family: var(--font-sans);
@@ -47,6 +48,217 @@
   box-shadow: 0 0 0 3px var(--accent-subtle);
 }
 
+/* Keyboard shortcut hint inside the search bar */
+.searchShortcut {
+  position: absolute;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.searchShortcut kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-tertiary);
+  font-size: 0.65rem;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  line-height: 1;
+}
+
+/* Clear button inside search bar */
+.searchClearBtn {
+  position: absolute;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  cursor: pointer;
+  z-index: 2;
+  transition: all 0.15s ease;
+}
+
+.searchClearBtn:hover {
+  background: var(--accent-subtle);
+  color: var(--text-primary);
+  border-color: var(--accent);
+}
+
+/* ━━━ Search Results Dropdown ━━━ */
+.searchDropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  z-index: 100;
+  overflow: hidden;
+  animation: slideDown 0.2s ease-out;
+}
+
+.searchDropdownHeader {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.searchDropdownTitle {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.searchResultCount {
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+}
+
+.searchResults {
+  max-height: 380px;
+  overflow-y: auto;
+}
+
+.searchResultItem {
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+  background: transparent;
+  font-family: inherit;
+}
+
+.searchResultItem:last-child {
+  border-bottom: none;
+}
+
+.searchResultItem:hover {
+  background: var(--bg-tertiary);
+}
+
+.searchResultInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.searchResultCompany {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.searchResultPosition {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.searchResultMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.searchResultLocation {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+/* Empty state */
+.searchEmpty {
+  padding: 28px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: var(--text-tertiary);
+  text-align: center;
+}
+
+.searchEmptyTitle {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.searchEmptySubtext {
+  font-size: 0.75rem;
+  max-width: 260px;
+  line-height: 1.4;
+}
+
+/* Loading state */
+.searchLoading {
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--text-tertiary);
+  font-size: 0.8rem;
+}
+
+.searchSpinner {
+  width: 22px;
+  height: 22px;
+  border: 2.5px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ━━━ Actions area ━━━ */
 .actions {
   display: flex;
   align-items: center;
